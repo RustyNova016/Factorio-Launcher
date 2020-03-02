@@ -40,7 +40,7 @@ class main_menu():
             path_entry.insert(0, path)
         subwin = tk.Tk()
 
-        title = tk.Label(subwin, text="Create a new factorio configuration")
+        title = tk.Label(subwin, text="Create a new Factorio configuration")
         name_label = tk.Label(subwin, text="Name: ")
         path_label = tk.Label(subwin, text="Path of the installation: ")
         version_label = tk.Label(subwin, text="Factorio version: ")
@@ -106,6 +106,20 @@ class main_menu():
         main_menu_loop = True
         main = tk.Tk()
 
+        def update_optionmenu():
+            global select_list, li, vari, configs_optionmenu
+            select_list = {}
+            li = []
+            for conf in factorio_configs.loaded_file["configs"]:
+                select_list[conf["name"] + " (" + conf["version"] + ")"] = conf
+                li.append(conf["name"] + " (" + conf["version"] + ")")
+
+            vari = tk.StringVar(main)
+            vari.set(li[0])
+
+            configs_optionmenu = tk.OptionMenu(main, vari, *li)
+            configs_optionmenu.grid(row=0, column=0, columnspan=2)
+
         select_list = {}
         li = []
         for conf in factorio_configs.loaded_file["configs"]:
@@ -132,9 +146,8 @@ class main_menu():
 
         while main_menu_loop:
             if self.update_config_list:
-                main.destroy()
+                update_optionmenu()
                 self.update_config_list = False
-                self.main_menu()
 
             if self.quit_launcher:
                 return
