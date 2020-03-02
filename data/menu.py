@@ -94,7 +94,7 @@ class main_menu():
         config_button.grid(row=1, column=0)
         reset_button = tk.Button(main, text="Reset", command=self.datareset)
         reset_button.grid(row=2, column=0)
-        launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()]["exe_path"]))
+        launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()["exe_path"]))
         launch_button.grid(row=3, column=0)
 
         def get_config_from_optionmenu():
