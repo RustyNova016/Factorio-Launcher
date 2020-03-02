@@ -2,7 +2,11 @@ from data.imports_final import *
 
 class main_menu():
 
+    def __init__(self):
+        self.update_config_list = False
+
     def create_config(self):
+        """Create a configuration window"""
         loop = True
 
         def check_path(path):
@@ -25,6 +29,13 @@ class main_menu():
                 config_handlera.create(name_entry.get(), path_entry.get())
                 subwin.destroy()
                 loop = False
+                self.update_config_list = True
+
+
+        def path_finder():
+            path = fd.askdirectory()
+            path_entry.delete(0, tk.END)
+            path_entry.insert(0, path)
         subwin = tk.Tk()
 
         title = tk.Label(subwin, text="Create a new factorio configuration")
@@ -32,7 +43,7 @@ class main_menu():
         path_label = tk.Label(subwin, text="Path of the installation: ")
         version_label = tk.Label(subwin, text="Factorio version: ")
 
-        filesearch_button = tk.Button(subwin, text=">")
+        filesearch_button = tk.Button(subwin, text=">", command=path_finder)
         ok_button = tk.Button(subwin, text="Create configuration", command=confirm)
         cancel_button = tk.Button(subwin, text="Cancel", command=subwin.destroy)
 
@@ -52,15 +63,20 @@ class main_menu():
         path_entry.grid(row=2, column=1)
 
         while loop:
-            version_label.configure(text=check_path(path_entry.get())[0])
-            subwin.update()
+            try:
+                version_label.configure(text=check_path(path_entry.get())[0])
+                subwin.update()
+            except:
+                return
 
 
     def datareset(self):
+        """Reset the data files"""
         settings.reset()
         factorio_configs.reset()
 
     def main_menu(self):
+        main_menu_loop = True
         main = tk.Tk()
 
         select_list = {}
@@ -81,7 +97,16 @@ class main_menu():
         launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(select_list[vari.get()]["exe_path"]))
         launch_button.grid(row=3, column=0)
 
-        main.mainloop()
+        while main_menu_loop:
+            if self.update_config_list:
+                main.destroy()
+                self.update_config_list = False
+                self.main_menu()
+            try:
+                main.update()
+            except:
+                return
 
     def factorio_launch(self, factorio_path):
+        """Launch Factorio"""
         os.startfile(factorio_path)
