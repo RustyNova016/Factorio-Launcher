@@ -44,5 +44,22 @@ class data_file():
             s = f.write(str(newdict))
         self.loaded_file = self.read()
 
-    def append(self, dict):
+    def append(self, dict): #todo remove
         self.loaded_file.append(dict)
+
+    def updatekeys(self):
+        for key in self.file_dict:
+            if key in self.loaded_file:
+                pass
+            else:
+                self.loaded_file[key] = self.file_dict[key]
+
+        for key in self.loaded_file:
+            if key in self.file_dict:
+                pass
+            else:
+                self.loaded_file.pop(key)
+
+        self.write()
+
+

@@ -89,9 +89,11 @@ class main_menu():
         vari.set(li[0])
 
         configs_optionmenu = tk.OptionMenu(main, vari, *li)
-        configs_optionmenu.grid(row=0, column=0)
-        config_button = tk.Button(main, text="Config", command=self.create_config)
+        configs_optionmenu.grid(row=0, column=0, columnspan=2)
+        config_button = tk.Button(main, text="Add configuration", command=self.create_config)
         config_button.grid(row=1, column=0)
+        config_button = tk.Button(main, text="Remove configuration", command=self.create_config)
+        config_button.grid(row=1, column=1)
         reset_button = tk.Button(main, text="Reset", command=self.datareset)
         reset_button.grid(row=2, column=0)
         launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()["exe_path"]))
