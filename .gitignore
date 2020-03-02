@@ -123,3 +123,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/codeStyles/codeStyleConfig.xml
+.idea/Factorio Launcher.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
