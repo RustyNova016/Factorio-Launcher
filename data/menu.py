@@ -6,6 +6,9 @@ class main_menu():
         self.update_config_list = False
         self.quit_launcher = False
         self.selected_config = {}
+        self.main_win = tk.Tk()
+        self.main_state = ""
+
 
     def create_config(self):
         """Create a configuration window"""
@@ -103,8 +106,8 @@ class main_menu():
 
 
     def main_menu(self):
+        self.main_state = "main"
         main_menu_loop = True
-        main = tk.Tk()
 
         def update_optionmenu():
             global select_list, li, vari, configs_optionmenu
@@ -114,10 +117,10 @@ class main_menu():
                 select_list[conf["name"] + " (" + conf["version"] + ")"] = conf
                 li.append(conf["name"] + " (" + conf["version"] + ")")
 
-            vari = tk.StringVar(main)
+            vari = tk.StringVar(self.main_win)
             vari.set(li[0])
 
-            configs_optionmenu = tk.OptionMenu(main, vari, *li)
+            configs_optionmenu = tk.OptionMenu(self.main_win, vari, *li)
             configs_optionmenu.grid(row=0, column=0, columnspan=2)
 
         select_list = {}
@@ -126,18 +129,18 @@ class main_menu():
             select_list[conf["name"] + " (" + conf["version"] + ")"] = conf
             li.append(conf["name"] + " (" + conf["version"] + ")")
 
-        vari = tk.StringVar(main)
+        vari = tk.StringVar(self.main_win)
         vari.set(li[0])
 
-        configs_optionmenu = tk.OptionMenu(main, vari, *li)
-        configs_optionmenu.grid(row=0, column=0, columnspan=2)
-        add_config_button = tk.Button(main, text="Add configuration", command=self.create_config)
+        configs_optionmenu = tk.OptionMenu(self.main_win, vari, *li)
+        configs_optionmenu.grid(row=0, column=0, columnspan=2, sticky=tk.NW)
+        add_config_button = tk.Button(self.main_win, text="Add configuration", command=self.create_config)
         add_config_button.grid(row=1, column=0)
-        rem_config_button = tk.Button(main, text="Remove configuration", command=self.remove_config)
+        rem_config_button = tk.Button(self.main_win, text="Remove configuration", command=self.remove_config)
         rem_config_button.grid(row=1, column=1)
-        reset_button = tk.Button(main, text="Reset", command=self.datareset)
+        reset_button = tk.Button(self.main_win, text="Reset", command=self.datareset)
         reset_button.grid(row=2, column=0)
-        launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()))
+        launch_button = tk.Button(self.main_win, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()))
         launch_button.grid(row=3, column=0)
 
         def get_config_from_optionmenu():
@@ -153,7 +156,7 @@ class main_menu():
                 return
             try:
                 self.selected_config = get_config_from_optionmenu()
-                main.update()
+                self.main_win.update()
             except:
                 return
 
@@ -164,3 +167,7 @@ class main_menu():
         os.startfile(config["exe_path"])
         if settings.loaded_file["launcher exit"]:
             self.quit_launcher = True
+
+
+    def settings_win(self):
+        set_win = tk.Tk()
