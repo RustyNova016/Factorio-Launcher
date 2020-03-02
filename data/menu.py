@@ -4,6 +4,8 @@ class main_menu():
 
     def __init__(self):
         self.update_config_list = False
+        self.quit_launcher = False
+        self.selected_config = {}
 
     def create_config(self):
         """Create a configuration window"""
@@ -70,10 +72,35 @@ class main_menu():
                 return
 
 
+    def remove_config(self):
+        confirm_loop = True
+        confirm_win = tk.Tk()
+
+        def rem_config():
+            factorio_configs.loaded_file["configs"].remove(self.selected_config)
+            factorio_configs.write()
+            self.update_config_list = True
+            confirm_win.destroy()
+
+
+        lab = tk.Label(confirm_win, text="Are you sure you want to remove this Factorio configuration?").grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=2)
+        yes_but = tk.Button(confirm_win, text="Yes", command=rem_config).grid(row=1, column=0)
+        no_but = tk.Button(confirm_win, text="No", command=confirm_win.destroy).grid(row=1, column=1)
+
+        while confirm_loop:
+            try:
+                confirm_win.update()
+            except:
+                return
+
+
     def datareset(self):
         """Reset the data files"""
         settings.reset()
         factorio_configs.reset()
+
 
     def main_menu(self):
         main_menu_loop = True
@@ -90,13 +117,13 @@ class main_menu():
 
         configs_optionmenu = tk.OptionMenu(main, vari, *li)
         configs_optionmenu.grid(row=0, column=0, columnspan=2)
-        config_button = tk.Button(main, text="Add configuration", command=self.create_config)
-        config_button.grid(row=1, column=0)
-        config_button = tk.Button(main, text="Remove configuration", command=self.create_config)
-        config_button.grid(row=1, column=1)
+        add_config_button = tk.Button(main, text="Add configuration", command=self.create_config)
+        add_config_button.grid(row=1, column=0)
+        rem_config_button = tk.Button(main, text="Remove configuration", command=self.remove_config)
+        rem_config_button.grid(row=1, column=1)
         reset_button = tk.Button(main, text="Reset", command=self.datareset)
         reset_button.grid(row=2, column=0)
-        launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()["exe_path"]))
+        launch_button = tk.Button(main, text="Launch Factorio", command=lambda: self.factorio_launch(get_config_from_optionmenu()))
         launch_button.grid(row=3, column=0)
 
         def get_config_from_optionmenu():
@@ -108,11 +135,19 @@ class main_menu():
                 main.destroy()
                 self.update_config_list = False
                 self.main_menu()
+
+            if self.quit_launcher:
+                return
             try:
+                self.selected_config = get_config_from_optionmenu()
                 main.update()
             except:
                 return
 
-    def factorio_launch(self, factorio_path):
+
+    def factorio_launch(self, config):
         """Launch Factorio"""
-        os.startfile(factorio_path)
+        settings.loaded_file["last used config"] = config["name"]
+        os.startfile(config["exe_path"])
+        if settings.loaded_file["launcher exit"]:
+            self.quit_launcher = True
